@@ -169,10 +169,9 @@ class GlioblastomaPredictor:
             self.is_loaded = True
     
     def _create_tabpfn_model(self):
-        """Create and train a TabPFN v2 model with synthetic data."""
+        """Create and train a TabPFN model with synthetic data."""
         try:
             from tabpfn import TabPFNClassifier
-            from tabpfn.constants import ModelVersion
             
             # Generate synthetic training data
             np.random.seed(42)
@@ -187,12 +186,12 @@ class GlioblastomaPredictor:
             self.scaler = StandardScaler()
             X_train_scaled = self.scaler.fit_transform(X_train)
             
-            # Create TabPFN v2 model (Apache 2.0 license, no auth required)
-            self.model = TabPFNClassifier.create_default_for_version(ModelVersion.V2, device='cpu')
+            # Create TabPFN model
+            self.model = TabPFNClassifier(device='cpu')
             self.model.fit(X_train_scaled, y_train)
             
             self._training_data = X_train_scaled[:100]  # Save subset for SHAP
-            logger.info("TabPFN v2 model created successfully")
+            logger.info("TabPFN model created successfully")
             
         except ImportError:
             logger.warning("TabPFN not available, using synthetic model")
